@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions
+  name="trafico" 
+  targetNamespace="http://localhost/dwes05_solucion/tarea"
+  xmlns:tns="http://localhost/dwes05_solucion/tarea" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+  xmlns="http://schemas.xmlsoap.org/wsdl/"  
+>
+<types>
+    <xsd:schema targetNamespace="http://localhost/dwes05_solucion/tarea">
+        <xsd:complexType name="medicion">
+            <xsd:all>
+                <xsd:element name="day" type="xsd:int" />
+                <xsd:element name="month" type="xsd:int"/>
+                <xsd:element name="year" type="xsd:int"/>
+                <xsd:element name="tramo" >
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="tramo1"/>
+                            <xsd:enumeration value="tramo2"/>
+                            <xsd:enumeration value="tramo3"/>
+                            <xsd:enumeration value="tramo4"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>                
+                <xsd:element name="estacion" type="xsd:string"/>
+                <xsd:element name="recuento" type="xsd:int"/>
+            </xsd:all>            
+        </xsd:complexType>
+    </xsd:schema>    
+</types>
+<message name="nuevaMedicionRequest">
+    <part name="datosMedicion" type="tns:medicion"/>
+</message>
+<message name="nuevaMedicionResponse">
+    <part name="result" type="xsd:int"/>
+</message>
+<message name="getMedicionRequest">
+    <part name="day" type="xsd:int"/>
+    <part name="month" type="xsd:int"/>
+    <part name="year" type="xsd:int"/>
+    <part name="estacion" type="xsd:string"/>
+</message>
+<message name="getMedicionResponse">
+    <part name="tramo1" type="xsd:int"/>
+    <part name="tramo2" type="xsd:int"/>
+    <part name="tramo3" type="xsd:int"/>
+    <part name="tramo4" type="xsd:int"/>
+</message>
+<portType name="medicionPortType">
+    <operation name="nuevaMedicion">
+        <input message="tns:nuevaMedicionRequest"/>
+        <output message="tns:nuevaMedicionResponse"/>
+    </operation>
+    <operation name="getMedicion">
+        <input message="tns:getMedicionRequest"/>
+        <output message="tns:getMedicionResponse"/>
+    </operation>
+</portType>
+<binding name="medicionBinding" type="tns:medicionPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <operation name="nuevaMedicion">
+        <soap:operation soapAction="http://localhost/dwes05_solucion/ws/mediciones.php?nuevaMedicion"/>
+        <input> 
+            <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost/dwes05_solucion/tarea" />
+        </input>
+        <output>
+            <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost/dwes05_solucion/tarea" />
+        </output>
+    </operation>
+    <operation name="getMedicion">        
+        <soap:operation soapAction="http://localhost/dwes05_solucion/ws/mediciones.php?getMedicion"/>
+        <input> 
+            <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost/dwes05_solucion/tarea" />
+        </input>
+        <output>
+            <soap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost/dwes05_solucion/tarea" />
+        </output>
+    </operation>
+</binding>    
+<service name="nuevaMedicionService">
+    <documentation>Servicio para mediciones de tráfico.</documentation>
+    <port name="nuevaMedicionService" binding="tns:medicionBinding">
+        <soap:address location="http://localhost/dwes05_solucion/ws/mediciones.php" />
+    </port>
+</service>        
+</definitions>
